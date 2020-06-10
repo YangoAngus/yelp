@@ -8,25 +8,25 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+import os
+
 
 BOT_NAME = 'yelp_scrapy'
 
 SPIDER_MODULES = ['yelp_scrapy.spiders']
 NEWSPIDER_MODULE = 'yelp_scrapy.spiders'
 
-# Retry many times since proxies often fail
-RETRY_TIMES = 10
-# Retry on most error codes since proxies fail for different reasons
-RETRY_HTTP_CODES = [500, 503, 504, 400, 403, 404, 408]
-
-DOWNLOADER_MIDDLEWARES = {
-    'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
-    'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
-    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
-    'scrapy_user_agents.middlewares.RandomUserAgentMiddleware': 400,
-}
-import os
 ROTATING_PROXY_LIST_PATH = os.getcwd() + '/proxy_list.txt'
+USER_AGENT_LIST = os.getcwd() + '/Firefox.txt'
+
+CONNECTION_STRING = "{drivername}://{user}:{passwd}@{host}:{port}/{db_name}?charset=utf8".format(
+    drivername="mysql",
+    user="yelpdb",
+    passwd="yelpdb",
+    host="db",
+    port="3306",
+    db_name="yelpdb",
+)
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'yelp_scrapy (+http://www.yourdomain.com)'
@@ -65,9 +65,13 @@ ROBOTSTXT_OBEY = False
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'yelp_scrapy.middlewares.YelpScrapyDownloaderMiddleware': 543,
-#}
+DOWNLOADER_MIDDLEWARES = {
+    # 'yelp_scrapy.middlewares.YelpScrapyDownloaderMiddleware': 543,
+    'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
+    'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
+    'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware': None,
+    'random_useragent.RandomUserAgentMiddleware': 400
+}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
@@ -77,9 +81,9 @@ ROBOTSTXT_OBEY = False
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'yelp_scrapy.pipelines.YelpScrapyPipeline': 300,
-#}
+ITEM_PIPELINES = {
+    'yelp_scrapy.pipelines.YelpScrapyPipeline': 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html

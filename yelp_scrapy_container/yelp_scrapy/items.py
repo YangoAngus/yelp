@@ -14,4 +14,12 @@ class YelpScrapyItem(scrapy.Item):
     title = scrapy.Field()
     address = scrapy.Field()
     telephone = scrapy.Field()
+    website = scrapy.Field()
+    timetable = scrapy.Field()
+    about = scrapy.Field()
+    images = scrapy.Field()
+    reviews = scrapy.Field()
+    category = scrapy.Field()
+    location = scrapy.Field()
+    source_url = scrapy.Field()
     pass
