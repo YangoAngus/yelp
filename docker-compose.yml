@@ -1,0 +1,47 @@
+version: '3.7'
+services:
+   scrapy:
+     image: crawler/yelp
+     build: ./yelp_scrapy_container
+     restart: unless-stopped
+     deploy:
+       resources:
+           limits:
+             cpus: '0.90'
+             memory: 1000M
+     restart: unless-stopped
+
+   db:
+     image: mysql
+     command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8
+     environment:
+        MYSQL_ROOT_PASSWORD: yelpdb
+        MYSQL_DATABASE: yelpdb
+        MYSQL_USER: yelpdb
+        MYSQL_PASSWORD: yelpdb
+        MYSQL_PASSWORD: yelpdb
+     deploy:
+       resources:
+           limits:
+             cpus: '0.90'
+             memory: 1000M
+     restart: unless-stopped
+     volumes:
+       - /volumes_data
+
+   phpmyadmin:
+     depends_on:
+       - db
+     image: phpmyadmin/phpmyadmin
+     ports:
+       - '8080:80'
+     environment:
+       PMA_HOST: db
+       MYSQL_ROOT_PASSWORD: yelpdb
+     deploy:
+       resources:
+           limits:
+             cpus: '0.50'
+             memory: 500M
+     restart: unless-stopped
+
