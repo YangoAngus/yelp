@@ -22,7 +22,7 @@ $ cd yelp
 ```
 $ docker-compose build
 ```
-*init swarm*
+*Init swarm*
 ```
 $ docker stack init
 ```
