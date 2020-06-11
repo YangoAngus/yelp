@@ -10,6 +10,9 @@
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 import os
 
+RETRY_TIMES = 10
+RETRY_HTTP_CODES = [429]
+
 
 BOT_NAME = 'yelp_scrapy'
 

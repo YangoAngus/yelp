@@ -31,6 +31,7 @@ class YelpScrapyPipeline(object):
             )
             session.add(to_business)
         else:
+            to_business.reviews = item.get('reviews')
             to_business.update_version += 1
             to_business.update_time = func.now()
 

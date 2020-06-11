@@ -3,26 +3,24 @@ import scrapy
 from yelp_scrapy.items import YelpScrapyItem
 from yelp_scrapy.models import init_db
 
-item = YelpScrapyItem()
-
 
 class YelpSpider(scrapy.Spider):
     name = 'yelp'
 
-    # def __init__(self):
-    #    init_db()
+    def __init__(self):
+        init_db()
 
     def start_requests(self):
         urls = [
             'https://www.yelp.com/search?cflt=restaurants&find_loc=Los%20Angeles%2C%20CA',
-            # 'https://www.yelp.com/search?cflt=gyms&find_loc=Los%20Angeles%2C%20CA',
-            # 'https://www.yelp.com/search?cflt=massage&find_loc=Los%20Angeles%2C%20CA',
-            # 'https://www.yelp.com/search?cflt=restaurants&find_loc=New%20York%2C%20NY',
-            # 'https://www.yelp.com/search?cflt=gyms&find_loc=New%20York%2C%20NY',
-            # 'https://www.yelp.com/search?cflt=massage&find_loc=New%20York%2C%20NY',
-            # 'https://www.yelp.com/search?cflt=restaurants&find_loc=San%20Francisco%2C%20CA',
-            # 'https://www.yelp.com/search?cflt=gyms&find_loc=San%20Francisco%2C%20CA',
-            # 'https://www.yelp.com/search?cflt=massage&find_loc=San%20Francisco%2C%20CA',
+            'https://www.yelp.com/search?cflt=gyms&find_loc=Los%20Angeles%2C%20CA',
+            'https://www.yelp.com/search?cflt=massage&find_loc=Los%20Angeles%2C%20CA',
+            'https://www.yelp.com/search?cflt=restaurants&find_loc=New%20York%2C%20NY',
+            'https://www.yelp.com/search?cflt=gyms&find_loc=New%20York%2C%20NY',
+            'https://www.yelp.com/search?cflt=massage&find_loc=New%20York%2C%20NY',
+            'https://www.yelp.com/search?cflt=restaurants&find_loc=San%20Francisco%2C%20CA',
+            'https://www.yelp.com/search?cflt=gyms&find_loc=San%20Francisco%2C%20CA',
+            'https://www.yelp.com/search?cflt=massage&find_loc=San%20Francisco%2C%20CA',
             ]
         for url in urls:
             yield scrapy.Request(
@@ -42,16 +40,14 @@ class YelpSpider(scrapy.Spider):
             'link-color--inherit__373c0__3dzpk '
             'link-size--inherit__373c0__1VFlE"]/@href'
             ).extract():
-            print(response.urljoin(i))
             yield scrapy.Request(
                 url=response.urljoin(i),
                 callback=self.inner_page,
                 meta={
-                    'location': response.url.split('%20')[-1],
-                    'category': response.url.split('cflt=')[1].split('&')[0]
+                    'location': response.url.split('%20')[-1].split('&')[0],
+                    'category': response.url.split('cflt=')[1].split('&')[0],
                 }
             )
-        """
         next_page = response.xpath(
             '//a[@class="lemon--a__373c0__IEZFH '
             'link__373c0__1G70M next-link '
@@ -65,12 +61,12 @@ class YelpSpider(scrapy.Spider):
                 url=next_page,
                 callback=self.in_category
             )
-        """
 
     def inner_page(self, response):
-        print('\n\n')
-        print(response.meta)
-        print('\n\n')
+        item = YelpScrapyItem()
+        item['category'] = response.meta.get('category')
+        item['location'] = response.meta.get('location')
+        item['source_url'] = response.url
         item['title'] = response.css('h1::text').get()
         item['address'] = {'address': address.css(
             'span::text'
@@ -103,12 +99,11 @@ class YelpSpider(scrapy.Spider):
             '//div[@data-testid="photoHeader"]//img/@src'
         ).extract()]
         reviews = response.xpath(
-            '//div[@class="lemon--div__373c0__1mboc '
-            'padding-b2__373c0__34gV1 '
-            'border-color--default__373c0__3-ifU '
-            'text-align--center__373c0__2n2yQ"]/span/text()'
+            '//span[@class="lemon--span__373c0__3997G text__373c0__2Kxyz '
+            'text-color--black-extra-light__373c0__2OyzO '
+            'text-align--left__373c0__2XGa-"]/text()'
         ).extract_first()
         item['reviews'] = int(
             reviews.split(' ')[-1]
         ) * 20 if reviews else reviews is 0
-        print(item)
+        yield item

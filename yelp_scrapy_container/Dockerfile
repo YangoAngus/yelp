@@ -11,7 +11,7 @@ RUN pip install mysqlclient
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 COPY . .
-CMD scrapy crawl test_case
+CMD scrapy crawl yelp
 
 
 

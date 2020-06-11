@@ -4,6 +4,12 @@ services:
      image: crawler/yelp
      build: ./yelp_scrapy_container
      restart: unless-stopped
+     deploy:
+       resources:
+           limits:
+             cpus: '0.90'
+             memory: 1000M
+     restart: unless-stopped
 
    db:
      image: mysql
@@ -35,7 +41,7 @@ services:
      deploy:
        resources:
            limits:
-             cpus: '0.90'
+             cpus: '0.50'
              memory: 500M
      restart: unless-stopped
 
