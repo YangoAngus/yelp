@@ -13,7 +13,7 @@
 *install docker-compose:* [https://docs.docker.com/compose/install/]
 
 ## start in swarm mode
-*Go to main project folder*
+*Go to main project folder,*
 *Example of cli commands in ubuntu os*
 ```
 $ cd yelp
