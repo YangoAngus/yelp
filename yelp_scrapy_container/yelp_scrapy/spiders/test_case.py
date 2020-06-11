@@ -16,7 +16,7 @@ class YelpTestSpider(scrapy.Spider):
 
     def start_requests(self):
         urls = [
-            # 'file://{}/test_html.html'.format(os.getcwd())
+            # 'file:///path to html file for test
             # 'https://www.yelp.com/biz/daves-hot-chicken-los-angeles',
             # 'https://www.yelp.com/biz/project-13-gyms-san-francisco',
             # 'https://www.yelp.com/biz/md-foot-massage-los-angeles-3',
