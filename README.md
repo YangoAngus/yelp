@@ -24,7 +24,7 @@ $ docker-compose build
 ```
 *Init swarm*
 ```
-$ docker stack init
+$ docker swarm init
 ```
 *Run containers*
 ```
